@@ -2,7 +2,7 @@ import os
 
 from cs50 import SQL
 import json
-from helper import lookup
+from helper import lookup, bss_code
 import datetime
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session

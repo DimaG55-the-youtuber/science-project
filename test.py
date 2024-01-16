@@ -1,3 +1,3 @@
 import helper
 
-print(helper.bss_code("Romance"))
+print(helper.bss_code("Fiction"))
