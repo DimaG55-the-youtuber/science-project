@@ -1,6 +1,8 @@
 import os
 
 from cs50 import SQL
+import json
+from helper import lookup
 import datetime
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
@@ -24,6 +26,7 @@ def index():
         return render_template("index.html")
 
     query = request.form.get("query")
+    print(query)
     return redirect("/search")
 
 @app.route("/search")
