@@ -6,5 +6,7 @@ link = "https://www.googleapis.com/books/v1/volumes?"
 def lookup(search):
     query = {"q": search, "key": key}
     query = urllib.parse.urlencode(query)
-    print(f"{link}{query}")
     return requests.get(f"{link}{query}")
+
+def bss_code(categories):
+    cat = categories[:3].upper()
