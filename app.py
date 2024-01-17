@@ -39,7 +39,10 @@ def search():
     totalItems = rawjson["totalItems"]
     books_list = []
     for i in rawjson["items"]:
-        isbn = int(i["volumeInfo"]["industryIdentifiers"][0]["identifier"])
+        try:
+            isbn = int(i["volumeInfo"]["industryIdentifiers"][0]["identifier"])
+        except:
+            isbn = "No ISBN13"
         title = i["volumeInfo"]["title"]
         author = i["volumeInfo"]["authors"][0]
         try:
@@ -49,12 +52,15 @@ def search():
         try:
             img = i["volumeInfo"]["imageLinks"]["thumbnail"]
         except:
-            img = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fonlinebookclub.org%2Freviews%2F&psig=AOvVaw1SptIdLhwE9PtdoVV2dpBX&ust=1705603230485000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJiItaiJ5YMDFQAAAAAdAAAAABAI"
+            img = "static/default_book_cover_2015.jpg"
         try:
             bss = bss_code(i["volumeInfo"]["categories"][0])        
         except:
             bss = bss_code("UKNOWN")
-        check = db.execute("SELECT * FROM books WHERE isbn = ?", int(i["volumeInfo"]["industryIdentifiers"][0]["identifier"]))
+        if isbn == "No ISBN13":
+            check = db.execute("SELECT * FROM books WHERE title = ?", title)
+        else:
+            check = db.execute("SELECT * FROM books WHERE isbn = ?", int(i["volumeInfo"]["industryIdentifiers"][0]["identifier"]))
         if len(check) == 0:
             db.execute("INSERT INTO books (isbn, title, author, description, img, bss) VALUES (?, ?, ?, ?, ?, ?)",
                 isbn,
