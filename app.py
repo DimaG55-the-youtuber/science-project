@@ -36,6 +36,7 @@ def search():
     rawjson = json.loads(lookup(query).text)
     if rawjson["totalItems"] == 0:
         return render_template("search.html", title = "Sorry we can't find anything")
+    totalItems = rawjson["totalItems"]
     rawjson = rawjson["items"][0]["volumeInfo"]
     check = db.execute("SELECT * FROM books WHERE isbn = ?", int(rawjson["industryIdentifiers"][0]["identifier"]))
     if len(check) == 0:    
@@ -47,6 +48,7 @@ def search():
                 rawjson["imageLinks"]["thumbnail"],
                 bss_code(rawjson["categories"][0]))
     return render_template("search.html",
+                           results = totalItems,
                            isbn = int(rawjson["industryIdentifiers"][0]["identifier"]),
                            bss = db.execute("SELECT bss FROM books WHERE isbn = ?", int(rawjson["industryIdentifiers"][0]["identifier"]))[0]["bss"],
                            title = rawjson["title"],
