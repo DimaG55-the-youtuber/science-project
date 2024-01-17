@@ -9,14 +9,15 @@ def lookup(search):
     return requests.get(f"{link}{query}")
 
 def bss_code(categories):
-    if categories == "Juvenile Fiction":
-        cat = "FIC"
-    elif categories == "Baggins, Frodo (Fictitious character)":
-        cat = "FIC"
-    elif categories == "Young Adult Fiction":
-        cat = "FIC"
-    else:
-        cat = categories[:3].upper()
+    # if categories == "Juvenile Fiction":
+    #     cat = "FIC"
+    # elif categories == "Baggins, Frodo (Fictitious character)":
+    #     cat = "FIC"
+    # elif categories == "Young Adult Fiction":
+    #     cat = "FIC"
+    # else:
+    #     cat = categories[:3].upper()
+    cat = categories.replace(" ", "_").upper()
     row = "{:03d}".format(random.randint(1, 100))
     shelf = random.randint(1, 9)
     identify = "{:03d}".format(random.randint(1, 100))
