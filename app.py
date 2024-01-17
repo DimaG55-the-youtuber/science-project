@@ -37,22 +37,46 @@ def search():
     if rawjson["totalItems"] == 0:
         return render_template("search.html", title = "Sorry we can't find anything")
     totalItems = rawjson["totalItems"]
+    books_list = []
+    for i in rawjson["items"]:
+        isbn = int(i["volumeInfo"]["industryIdentifiers"][0]["identifier"])
+        title = i["volumeInfo"]["title"]
+        author = i["volumeInfo"]["authors"][0]
+        try:
+            description = i["volumeInfo"]["description"]
+        except:
+            description = "No description"
+        try:
+            img = i["volumeInfo"]["imageLinks"]["thumbnail"]
+        except:
+            img = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fonlinebookclub.org%2Freviews%2F&psig=AOvVaw1SptIdLhwE9PtdoVV2dpBX&ust=1705603230485000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJiItaiJ5YMDFQAAAAAdAAAAABAI"
+        try:
+            bss = bss_code(i["volumeInfo"]["categories"][0])        
+        except:
+            bss = bss_code("UKNOWN")
+        check = db.execute("SELECT * FROM books WHERE isbn = ?", int(i["volumeInfo"]["industryIdentifiers"][0]["identifier"]))
+        if len(check) == 0:
+            db.execute("INSERT INTO books (isbn, title, author, description, img, bss) VALUES (?, ?, ?, ?, ?, ?)",
+                isbn,
+                title,
+                author,
+                description,
+                img,
+                bss
+                )
+        tmp = {"isbn": isbn, "bss": bss, "title": title, "author": author, "description": description, "img_link": img}
+        books_list.append(tmp)
     rawjson = rawjson["items"][0]["volumeInfo"]
-    check = db.execute("SELECT * FROM books WHERE isbn = ?", int(rawjson["industryIdentifiers"][0]["identifier"]))
-    if len(check) == 0:    
-        db.execute("INSERT INTO books (isbn, title, author, description, img, bss) VALUES (?, ?, ?, ?, ?, ?)",
-                int(rawjson["industryIdentifiers"][0]["identifier"]),
-                rawjson["title"],
-                rawjson["authors"][0],
-                rawjson["description"],
-                rawjson["imageLinks"]["thumbnail"],
-                bss_code(rawjson["categories"][0]))
     return render_template("search.html",
                            results = totalItems,
-                           isbn = int(rawjson["industryIdentifiers"][0]["identifier"]),
-                           bss = db.execute("SELECT bss FROM books WHERE isbn = ?", int(rawjson["industryIdentifiers"][0]["identifier"]))[0]["bss"],
-                           title = rawjson["title"],
-                           author = rawjson["authors"][0],
-                           description = rawjson["description"],
-                           img_link = rawjson["imageLinks"]["thumbnail"]
+                           query = books_list
     )
+    # return render_template("search.html",
+    #                        results = totalItems,
+    #                        isbn = int(rawjson["industryIdentifiers"][0]["identifier"]),
+    #                        bss = db.execute("SELECT bss FROM books WHERE isbn = ?", int(rawjson["industryIdentifiers"][0]["identifier"]))[0]["bss"],
+    #                        title = rawjson["title"],
+    #                        author = rawjson["authors"][0],
+    #                        description = rawjson["description"],
+    #                        img_link = rawjson["imageLinks"]["thumbnail"]
+    # )

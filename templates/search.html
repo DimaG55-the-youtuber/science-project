@@ -44,38 +44,30 @@
         <h2>Result(s): {{ results }}</h2>
     </div>
     <hr style="height:2px;border-width:0;color:gray;background-color:gray">
-    <div class="hp padding123">
-        <div id="hp">
-            <img src="{{ img_link }}">
+    {% for i in query %}
+        {% set imgLink = i["img_link"]%}
+        {% set isbn = i["isbn"] %}
+        {% set bss = i["bss"] %}
+        {% set title = i["title"] %}
+        {% set author = i["author"] %}
+        {% set description = i["description"] %}
+        <div class="hp padding123">
+            <div id="hp">
+                <img src="{{ imgLink }}">
+            </div>
+            <div class="div_test">
+                Isbn: {{ isbn }}
+                <br>
+                Bss: {{ bss }}
+                <br>
+                Title: {{ title }}
+                <br>
+                Author(s): {{ author }}
+                <br>
+                Description: {{ description }}
+            </div>
         </div>
-        <div class="div_test">
-            Isbn: {{ isbn }}
-            <br>
-            Bss: {{ bss }}
-            <br>
-            Title: {{ title }}
-            <br>
-            Author(s): {{ author }}
-            <br>
-            Description: {{ description }}
-        </div>
-    </div>
-    <hr style="height:2px;border-width:0;color:grey;background-color:gray">
-    <div class="hp padding123">
-        <div id="hp">
-            <img src="{{ img_link }}">
-        </div>
-        <div class="div_test">
-            Isbn: {{ isbn }}
-            <br>
-            Bss: {{ bss }}
-            <br>
-            Title: {{ title }}
-            <br>
-            Author(s): {{ author }}
-            <br>
-            Description: {{ description }}
-        </div>
-    </div>
+        <hr style="height:2px;border-width:0;color:grey;background-color:gray">
+    {% endfor %}
     </body>
 </html>
